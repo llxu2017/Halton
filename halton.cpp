@@ -50,6 +50,8 @@ email: lxu@math.fsu.edu, okten@math.fsu.edu
 */
 
 #include <cassert>
+#include <cmath>
+#include <cstring>
 #include "halton.h"
 
 

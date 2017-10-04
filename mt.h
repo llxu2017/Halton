@@ -60,7 +60,7 @@ email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 #ifndef _MT64_H
 #define _MT64_H
 
-#include <iostream>
+#include <cstdlib>
 
 #define NN 312
 #define MM 156
