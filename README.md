@@ -1,7 +1,10 @@
 ## Halton
 
+Fast Halton sequence generator. 
 Generate random-start randomly permuted Halton sequence of low discrepancy numbers. 
 Peak performance 10^8 numbers in 1 second. As a reference, 2x10^8 numbers in 1 second using Mersenne Twister pseudorandom number generator on the same computer.
+
+TODO: Follow C++ 17 standard and remove dimension limitation.
 
 ## References:
 
