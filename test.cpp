@@ -1,16 +1,17 @@
 #include <cstdio>
 #include "halton.h"
+#include "timer.h"
 
-#define N 100000000
-#define DIM 10
+#define N 10000000
+#define DIM 100
 
-double sum = 0;
 
 int main(void)
 {
+START
 	halton *p = new halton();
 	p->init(DIM, true, true); // DIM dimensions, random start, randomly permuted
-	printf("Running...\n");
+	//printf("Running...\n");
 
 	for (size_t i = 1; i <= N; i++)
 	{
@@ -23,5 +24,6 @@ int main(void)
 
 	}
 	delete p;
+STOP
 	return 0;
 }
