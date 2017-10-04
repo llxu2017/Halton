@@ -71,10 +71,10 @@ halton::halton(bool isMaster)
 
 void halton::set_power_buffer()
 {
-	for(uint16 d = 0; d < dim; d++)
-		for(uint8 j = 0; j < WIDTH; j++)
+	for (uint16 d = 0; d < dim; d++)
+		for (uint8 j = 0; j < WIDTH; j++)
 		{
-			if(j == 0) 
+			if (j == 0)
 				pwr[d][j] = base[d];
 			else
 				pwr[d][j] = pwr[d][j - 1] * base[d];
@@ -94,21 +94,21 @@ void halton::init_expansion()
 	int8 j;
 	uint64 n = 0;
 	uint32 d = 0;
-	for(i = 0; i < dim; i++)
+	for (i = 0; i < dim; i++)
 	{
 		n = start[i] - 1;
 		j = 0;
-		while(n > 0)
+		while (n > 0)
 		{
 			digit[i][j] = n % base[i];
 			n = n / base[i];
 			j++;
 		}
 		j--;
-		while(j >= 0)
+		while (j >= 0)
 		{
 			d = digit[i][j];
-			if(isRandomlyPermuted)
+			if (isRandomlyPermuted)
 				d = permute(i, j);
 			rnd[i][j] = rnd[i][j + 1] + d * 1.0 / pwr[i][j];
 			j--;
@@ -123,58 +123,58 @@ void halton::genHalton()
 	uint64 n = 0;
 	uint32 d = 0;
 
-	for(i = 0; i < dim; i++)
+	for (i = 0; i < dim; i++)
 	{
 		j = 0;
-		while(digit[i][j] + 1 >= base[i])
+		while (digit[i][j] + 1 >= base[i])
 			j++;
 		digit[i][j]++;
 		d = digit[i][j];
-		if(isRandomlyPermuted)
+		if (isRandomlyPermuted)
 			d = permute(i, j);
 		rnd[i][j] = rnd[i][j + 1] + d * 1.0 / pwr[i][j];
-		for(j = j - 1; j >= 0; j--)
+		for (j = j - 1; j >= 0; j--)
 		{
 			digit[i][j] = 0;
 			d = 0;
-			if(isRandomlyPermuted)
+			if (isRandomlyPermuted)
 				d = permute(i, j);
 			rnd[i][j] = rnd[i][j + 1] + d * 1.0 / pwr[i][j];
 		}
 	}
 }
 
-uint32 inline halton::permute(uint8 i,uint8 j)
+uint32 inline halton::permute(uint8 i, uint8 j)
 {
 	return *(*(ppm + i) + digit[i][j]);
 }
 
 void halton::set_permutation()
 {
-	if(ppm)
+	if (ppm)
 	{
-		for(uint32 i = 0; i < dim; i++)
+		for (uint32 i = 0; i < dim; i++)
 		{
-			delete [] *(ppm + i);
+			delete[] * (ppm + i);
 			*(ppm + i) = NULL;
 		}
-		delete [] ppm;
+		delete[] ppm;
 		ppm = NULL;
 	}
-	ppm = new uint32* [dim];
-	
+	ppm = new uint32*[dim];
+
 	uint32 j, k, tmp;
-	
-	for(uint32 i = 0; i < dim; i++)
+
+	for (uint32 i = 0; i < dim; i++)
 	{
 		*(ppm + i) = new uint32[base[i]];
-		for(j = 0; j < base[i]; j++)
+		for (j = 0; j < base[i]; j++)
 			*(*(ppm + i) + j) = j;
-		
-		for(j = 1; j < base[i]; j++)
+
+		for (j = 1; j < base[i]; j++)
 		{
 			tmp = (uint32)floor(pmt->genrand64_real3() * base[i]);
-			if(tmp != 0)
+			if (tmp != 0)
 			{
 				k = *(*(ppm + i) + j);
 				*(*(ppm + i) + j) = *(*(ppm + i) + tmp);
@@ -187,21 +187,21 @@ void halton::set_permutation()
 
 void halton::get_prime(uint16 n, uint32 *p)
 {
-	if(n <= 0) assert(0);
+	if (n <= 0) assert(0);
 	uint32 prime = 1;
 	do
 	{
 		prime++;
 		*p++ = prime;
 		n--;
-		for(uint32 i = 2; i <= sqrt(prime * 1.0); i++)
-			if(prime % i == 0)
-			{	
+		for (uint32 i = 2; i <= sqrt(prime * 1.0); i++)
+			if (prime % i == 0)
+			{
 				n++;
 				p--;
 				break;
 			}
-	}while(n > 0);
+	} while (n > 0);
 }
 
 void halton::set_dim(uint16 d)
@@ -212,9 +212,9 @@ void halton::set_dim(uint16 d)
 
 void halton::set_start()
 {
-	for(uint32 i = 0; i < dim; i++)
+	for (uint32 i = 0; i < dim; i++)
 	{
-		if(isRandomStart)
+		if (isRandomStart)
 			start[i] = rnd_start(pmt->genrand64_real3(), base[i]);
 		else
 			start[i] = 1;
@@ -242,12 +242,12 @@ uint64 halton::rnd_start(real r, uint32 base)
 	uint64 z = 0;
 	uint16 cnt = 0;
 	uint64 b = base;
-	while(r > 1e-16) // Potential deal loop?
+	while (r > 1e-16) // Potential deal loop?
 	{
 		cnt = 0;
-		if(r >= 1.0 / b)
+		if (r >= 1.0 / b)
 		{
-			cnt = (uint16) floor(r * b);
+			cnt = (uint16)floor(r * b);
 			r = r - cnt * 1.0 / b;
 			z += cnt * b / base;
 		}
@@ -259,7 +259,7 @@ uint64 halton::rnd_start(real r, uint32 base)
 void halton::init(uint16 dim, bool rs, bool rp)
 {
 	set_dim(dim);
-	if(isMasterThread)
+	if (isMasterThread)
 		set_base();
 	set_random_start_flag(rs);
 	set_permute_flag(rp);
@@ -268,12 +268,12 @@ void halton::init(uint16 dim, bool rs, bool rp)
 
 void halton::configure()
 {
-	if(isMasterThread)
+	if (isMasterThread)
 		set_start();
-	if(isMasterThread && !isPowerInitialized)
+	if (isMasterThread && !isPowerInitialized)
 		set_power_buffer();
 	clear_buffer();
-	if(isMasterThread && isRandomlyPermuted && !isPermutationReady)
+	if (isMasterThread && isRandomlyPermuted && !isPermutationReady)
 		set_permutation();
 	init_expansion();
 }

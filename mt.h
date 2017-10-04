@@ -71,15 +71,15 @@ email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 
 class MersenneTwister {
 public:
-	static MersenneTwister* Instance(){if(_instance==NULL) _instance=new MersenneTwister();return _instance;}
+	static MersenneTwister* Instance() { if (_instance == NULL) _instance = new MersenneTwister(); return _instance; }
 	/* initializes mt[NN] with a seed */
 	void init_genrand64(unsigned long long seed);
 
 	/* initialize by an array with array-length */
 	/* init_key is the array for initializing keys */
 	/* key_length is its length */
-	void init_by_array64(unsigned long long init_key[], 
-				 unsigned long long key_length);
+	void init_by_array64(unsigned long long init_key[],
+		unsigned long long key_length);
 
 	/* generates a random number on [0, 2^64-1]-interval */
 	unsigned long long genrand64_int64(void);

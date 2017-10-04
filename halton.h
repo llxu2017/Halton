@@ -68,7 +68,7 @@ typedef long int32;
 typedef long long int64;
 
 #define HALTON_DIM 1000		// Maximum dimension allowed. Match minimum need to save memory.
-							// Support up to 4096 dimensions if memory permits
+// Support up to 4096 dimensions if memory permits
 #define WIDTH 64			// Integer width
 
 class halton
@@ -77,13 +77,13 @@ public:
 	halton(bool isMaster = true);
 	~halton()
 	{
-		if(isMasterThread && isRandomlyPermuted)
+		if (isMasterThread && isRandomlyPermuted)
 		{
-			if(ppm)
+			if (ppm)
 			{
-				for(uint16 i = 0; i < dim; i++)
-					delete [] *(ppm + i);
-				delete [] ppm;
+				for (uint16 i = 0; i < dim; i++)
+					delete[] * (ppm + i);
+				delete[] ppm;
 				ppm = NULL;
 			}
 		}
@@ -96,19 +96,19 @@ public:
 	void set_start();
 	void alter_start(uint32 d, uint64 rs);
 	void set_permutation();
-	void set_permute_flag(bool rp){isRandomlyPermuted = rp;}
-	void set_random_start_flag(bool rs){isRandomStart = rs;}
+	void set_permute_flag(bool rp) { isRandomlyPermuted = rp; }
+	void set_random_start_flag(bool rs) { isRandomStart = rs; }
 	void set_power_buffer();
 	void clear_buffer();
 	uint64 rnd_start(real r, uint32 base);
-	
+
 	void genHalton();
-	
+
 	inline uint32 permute(uint8 i, uint8 j);
-	uint64 get_start(uint32 d){return start[d - 1];}
+	uint64 get_start(uint32 d) { return start[d - 1]; }
 	void get_prime(uint16 n, uint32 *p);
 	real get_rnd(uint16 d);
-	
+
 private:
 	uint16 dim;
 	uint64 start[HALTON_DIM];
