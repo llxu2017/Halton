@@ -59,8 +59,6 @@ email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
 
-#include <ctime>
-#include <cstdlib>
 #include "mt.h"
 
 /* The array for the state vector */
@@ -82,13 +80,11 @@ void MersenneTwister::init_genrand64(unsigned long long seed)
 void MersenneTwister::init_by_array64(unsigned long long init_key[],
 		     unsigned long long key_length)
 {
-	srand((int)time(0));//Pick a seed
     unsigned long long i, j, k;
     init_genrand64(19650218ULL);
     i=1; j=0;
     k = (NN>key_length ? NN : key_length);
     for (; k; k--) {
-		init_key[j] += rand();//Add this line to generate a random start for MT
         mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 62)) * 3935559000370003845ULL))
           + init_key[j] + j; /* non linear */
         i++; j++;
