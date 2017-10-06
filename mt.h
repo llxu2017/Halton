@@ -73,20 +73,20 @@ class MersenneTwister {
 public:
 	static MersenneTwister* Instance() { if (_instance == nullptr) _instance = new MersenneTwister(); return _instance; }
 	/* initializes mt[NN] with a seed */
-	void init_genrand64(unsigned long long seed);
+	void init_genrand64(uint64_t seed);
 
 	/* initialize by an array with array-length */
 	/* init_key is the array for initializing keys */
 	/* key_length is its length */
-	void init_by_array64(unsigned long long init_key[],
-		unsigned long long key_length);
+	void init_by_array64(uint64_t init_key[],
+		uint64_t key_length);
 
 	/* generates a random number on [0, 2^64-1]-interval */
-	unsigned long long genrand64_int64(void);
+	uint64_t genrand64_int64(void);
 
 
 	/* generates a random number on [0, 2^63-1]-interval */
-	long long genrand64_int63(void);
+	int64_t genrand64_int63(void);
 
 	/* generates a random number on [0,1]-real-interval */
 	double genrand64_real1(void);
@@ -101,7 +101,7 @@ private:
 	{
 		init_by_array64(init_64, length_64);
 	}
-	static unsigned long long init_64[4], length_64;
+	static uint64_t init_64[4], length_64;
 	static MersenneTwister* _instance;
 };
 

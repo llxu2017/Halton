@@ -58,16 +58,17 @@ http://www.math.hiroshima-u.ac.jp/~m-mat/MT/emt.html
 email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
-
+#include <ctime>
+#include <cstdint>
 #include "mt.h"
 
 /* The array for the state vector */
-static unsigned long long mt[NN];
+static uint64_t mt[NN];
 /* mti==NN+1 means mt[NN] is not initialized */
 static int mti = NN + 1;
 
 /* initializes mt[NN] with a seed */
-void MersenneTwister::init_genrand64(unsigned long long seed)
+void MersenneTwister::init_genrand64(uint64_t seed)
 {
 	mt[0] = seed;
 	for (mti = 1; mti < NN; mti++)
@@ -77,11 +78,14 @@ void MersenneTwister::init_genrand64(unsigned long long seed)
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void MersenneTwister::init_by_array64(unsigned long long init_key[],
-	unsigned long long key_length)
+void MersenneTwister::init_by_array64(uint64_t init_key[],
+	uint64_t key_length)
 {
-	unsigned long long i, j, k;
+	srand((int)time(0));
+	uint64_t i, j, k;
 	init_genrand64(19650218ULL);
+	// Random seed
+	//init_genrand64((uint64_t(rand()) << 8) | uint64_t(rand()));
 	i = 1; j = 0;
 	k = (NN > key_length ? NN : key_length);
 	for (; k; k--) {
@@ -102,11 +106,11 @@ void MersenneTwister::init_by_array64(unsigned long long init_key[],
 }
 
 /* generates a random number on [0, 2^64-1]-interval */
-unsigned long long MersenneTwister::genrand64_int64(void)
+uint64_t MersenneTwister::genrand64_int64(void)
 {
 	int i;
-	unsigned long long x;
-	static unsigned long long mag01[2] = { 0ULL, MATRIX_A_64 };
+	uint64_t x;
+	static uint64_t mag01[2] = { 0ULL, MATRIX_A_64 };
 
 	if (mti >= NN) { /* generate NN words at one time */
 
@@ -140,9 +144,9 @@ unsigned long long MersenneTwister::genrand64_int64(void)
 }
 
 /* generates a random number on [0, 2^63-1]-interval */
-long long MersenneTwister::genrand64_int63(void)
+int64_t MersenneTwister::genrand64_int63(void)
 {
-	return (long long)(genrand64_int64() >> 1);
+	return (int64_t)(genrand64_int64() >> 1);
 }
 
 /* generates a random number on [0,1]-real-interval */
@@ -163,6 +167,6 @@ double MersenneTwister::genrand64_real3(void)
 	return ((genrand64_int64() >> 12) + 0.5) * (1.0 / 4503599627370496.0);
 }
 
-unsigned long long MersenneTwister::length_64 = 4;
-unsigned long long MersenneTwister::init_64[4] = { 0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL };
-MersenneTwister* MersenneTwister::_instance = NULL;
+uint64_t MersenneTwister::length_64 = 4;
+uint64_t MersenneTwister::init_64[4] = { 0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL };
+MersenneTwister* MersenneTwister::_instance = nullptr;
