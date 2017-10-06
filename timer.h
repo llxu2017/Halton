@@ -1,19 +1,14 @@
 #ifndef _TIMER_H
 #define _TIMER_H
 
-#include <windows.h>
-#include <cstdio>
+#include <chrono>
+#include <iostream>
+#include <iomanip>
 
-static LARGE_INTEGER nFreq;
-static LARGE_INTEGER nBeginTime;
-static LARGE_INTEGER nEndTime;
+#define START 	static auto t_start = std::chrono::high_resolution_clock::now();
 
-#define START 	QueryPerformanceFrequency(&nFreq);\
-				QueryPerformanceCounter(&nBeginTime);
-
-#define STOP	QueryPerformanceCounter(&nEndTime);\
-				printf("%f milisecond\n", double(nEndTime.QuadPart-nBeginTime.QuadPart)*1000.0/nFreq.QuadPart);\
-				fflush(stdout);
-
+#define STOP	static auto t_end = std::chrono::high_resolution_clock::now(); \
+                std::cout << std::fixed << std::setprecision(6) << "CPU time: " \
+                << std::chrono::duration<double, std::milli>(t_end - t_start).count() \
+                <<" ms\n";
 #endif
-				//cout<<(nEndTime.QuadPart-nBeginTime.QuadPart)*1000.0/nFreq.QuadPart<<' '<<"milisecond"<<endl;

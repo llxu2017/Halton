@@ -48,14 +48,9 @@ email: lxu@math.fsu.edu, okten@math.fsu.edu
 #include <cassert>
 #include <cmath>
 #include <cstring>
+#include <algorithm>
 #include "halton.h"
 
-
-MersenneTwister* halton::pmt = MersenneTwister::Instance();
-
-uint32 halton::base[HALTON_DIM];
-uint64 halton::pwr[HALTON_DIM][WIDTH];
-uint32** halton::ppm = NULL;
 
 halton::halton(bool isMaster)
 {
@@ -65,12 +60,15 @@ halton::halton(bool isMaster)
 	isMasterThread = isMaster;
 	dim = 0;
 	isPermutationReady = false;
+	isBaseInitialized = false;
+	pmt = MersenneTwister::Instance();
+	ppm = nullptr;
 }
 
 void halton::set_power_buffer()
 {
-	for (uint16 d = 0; d < dim; d++)
-		for (uint8 j = 0; j < WIDTH; j++)
+	for (size_t d = 0; d < dim; d++)
+		for (uint8_t j = 0; j < WIDTH; j++)
 		{
 			if (j == 0)
 				pwr[d][j] = base[d];
@@ -82,16 +80,18 @@ void halton::set_power_buffer()
 
 void halton::clear_buffer()
 {
-	memset(digit, 0, sizeof(digit));
-	memset(rnd, 0, sizeof(rnd));
+	for (auto &v : rnd)
+		std::fill(begin(v), end(v), 0.0);
+	for (auto &v : digit)
+		std::fill(begin(v), end(v), 0);
 }
 
 void halton::init_expansion()
 {
-	uint16 i;
-	int8 j;
-	uint64 n = 0;
-	uint32 d = 0;
+	size_t i;
+	int8_t j;
+	uint64_t n = 0;
+	uint64_t d = 0;
 	for (i = 0; i < dim; i++)
 	{
 		n = start[i] - 1;
@@ -116,10 +116,10 @@ void halton::init_expansion()
 
 void halton::genHalton()
 {
-	uint16 i;
-	int8 j;
-	uint64 n = 0;
-	uint32 d = 0;
+	size_t i;
+	int8_t j;
+	uint64_t n = 0;
+	uint64_t d = 0;
 
 	for (i = 0; i < dim; i++)
 	{
@@ -142,7 +142,7 @@ void halton::genHalton()
 	}
 }
 
-uint32 inline halton::permute(uint8 i, uint8 j)
+uint64_t inline halton::permute(size_t i, uint8_t j)
 {
 	return *(*(ppm + i) + digit[i][j]);
 }
@@ -151,27 +151,27 @@ void halton::set_permutation()
 {
 	if (ppm)
 	{
-		for (uint32 i = 0; i < dim; i++)
+		for (size_t i = 0; i < dim; i++)
 		{
 			delete[] * (ppm + i);
-			*(ppm + i) = NULL;
+			*(ppm + i) = nullptr;
 		}
 		delete[] ppm;
-		ppm = NULL;
+		ppm = nullptr;
 	}
-	ppm = new uint32*[dim];
+	ppm = new uint64_t* [dim];
 
-	uint32 j, k, tmp;
+	uint64_t j, k, tmp;
 
-	for (uint32 i = 0; i < dim; i++)
+	for (size_t i = 0; i < dim; i++)
 	{
-		*(ppm + i) = new uint32[base[i]];
+		*(ppm + i) = new uint64_t[base[i]];
 		for (j = 0; j < base[i]; j++)
 			*(*(ppm + i) + j) = j;
 
 		for (j = 1; j < base[i]; j++)
 		{
-			tmp = (uint32)floor(pmt->genrand64_real3() * base[i]);
+			tmp = (uint64_t) floor(pmt->genrand64_real3() * base[i]);
 			if (tmp != 0)
 			{
 				k = *(*(ppm + i) + j);
@@ -183,34 +183,35 @@ void halton::set_permutation()
 	isPermutationReady = true;
 }
 
-void halton::get_prime(uint16 n, uint32 *p)
+void halton::get_prime()
 {
-	if (n <= 0) assert(0);
-	uint32 prime = 1;
+	int64_t n = dim;
+	uint64_t prime = 1;
+	size_t m = 0;
 	do
 	{
 		prime++;
-		*p++ = prime;
+		base[m++]= prime;
 		n--;
-		for (uint32 i = 2; i <= sqrt(prime * 1.0); i++)
+		for (uint64_t i = 2; i <= sqrt(prime * 1.0); i++)
 			if (prime % i == 0)
 			{
 				n++;
-				p--;
+				m--;
 				break;
 			}
 	} while (n > 0);
 }
 
-void halton::set_dim(uint16 d)
+void halton::set_dim(size_t d)
 {
-	assert(d <= HALTON_DIM);
+	assert(d <= MAX_DIM);
 	dim = d;
 }
 
 void halton::set_start()
 {
-	for (uint32 i = 0; i < dim; i++)
+	for (size_t i = 0; i < dim; i++)
 	{
 		if (isRandomStart)
 			start[i] = rnd_start(pmt->genrand64_real3(), base[i]);
@@ -220,32 +221,33 @@ void halton::set_start()
 	}
 }
 
-void halton::alter_start(uint32 d, uint64 rs)
+void halton::alter_start(size_t d, uint64_t rs)
 {
 	start[d - 1] = rs;
 }
 
 void halton::set_base()
 {
-	get_prime(dim, base);
+	get_prime();
+	isBaseInitialized = true;
 }
 
-real halton::get_rnd(uint16 d)
+double halton::get_rnd(size_t d)
 {
 	return rnd[d - 1][0];
 }
 
-uint64 halton::rnd_start(real r, uint32 base)
+uint64_t halton::rnd_start(double r, uint64_t base)
 {
-	uint64 z = 0;
-	uint16 cnt = 0;
-	uint64 b = base;
+	uint64_t z = 0;
+	uint64_t cnt = 0;
+	uint64_t b = base;
 	while (r > 1e-16) // Potential deal loop?
 	{
 		cnt = 0;
 		if (r >= 1.0 / b)
 		{
-			cnt = (uint16)floor(r * b);
+			cnt = (uint64_t) floor(r * b);
 			r = r - cnt * 1.0 / b;
 			z += cnt * b / base;
 		}
@@ -254,10 +256,15 @@ uint64 halton::rnd_start(real r, uint32 base)
 	return z;
 }
 
-void halton::init(uint16 dim, bool rs, bool rp)
+void halton::init(size_t dim, bool rs, bool rp)
 {
 	set_dim(dim);
-	if (isMasterThread)
+	rnd.resize(dim, std::vector<double>(WIDTH));
+	digit.resize(dim, std::vector<uint64_t>(WIDTH));
+	pwr.resize(dim, std::vector<uint64_t>(WIDTH));
+	start.resize(dim);
+	base.resize(dim);
+	if (isMasterThread && !isBaseInitialized)
 		set_base();
 	set_random_start_flag(rs);
 	set_permute_flag(rp);

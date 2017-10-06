@@ -71,7 +71,7 @@ email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 
 class MersenneTwister {
 public:
-	static MersenneTwister* Instance() { if (_instance == NULL) _instance = new MersenneTwister(); return _instance; }
+	static MersenneTwister* Instance() { if (_instance == nullptr) _instance = new MersenneTwister(); return _instance; }
 	/* initializes mt[NN] with a seed */
 	void init_genrand64(unsigned long long seed);
 

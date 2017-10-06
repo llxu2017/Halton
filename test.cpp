@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <memory>
 #include "halton.h"
 #include "timer.h"
 
@@ -10,7 +11,7 @@
 int main(void)
 {
 START
-	halton *p = new halton();
+	std::shared_ptr<halton> p(new halton());
 	p->init(DIM, true, true); // DIM dimensions, random start, randomly permuted
 	//printf("Running...\n");
 
@@ -25,7 +26,6 @@ START
 		//fprintf(stderr, "\n");
 
 	}
-	delete p;
 STOP
 	return 0;
 }

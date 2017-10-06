@@ -48,24 +48,14 @@ email: lxu@math.fsu.com, okten@math.fsu.edu
 #ifndef _HALTON_H
 #define _HALTON_H
 
+#include <climits>
+#include <cstdint>
+#include <vector>
+
 #include "mt.h"
 
-
-typedef double real;
-
-typedef unsigned short uint8;
-typedef unsigned int uint16;
-typedef unsigned long uint32;
-typedef unsigned long long uint64;
-
-typedef short int8;
-typedef int int16;
-typedef long int32;
-typedef long long int64;
-
-#define HALTON_DIM 1000		// Maximum dimension allowed. Match minimum need to save memory.
-// Support up to 4096 dimensions if memory permits
-#define WIDTH 64			// Integer width
+#define MAX_DIM 4096 // Support up to 4096 dimensions if memory permits
+#define WIDTH 64
 
 class halton
 {
@@ -77,46 +67,47 @@ public:
 		{
 			if (ppm)
 			{
-				for (uint16 i = 0; i < dim; i++)
+				for (size_t i = 0; i < dim; i++)
 					delete[] * (ppm + i);
 				delete[] ppm;
-				ppm = NULL;
+				ppm = nullptr;
 			}
 		}
 	}
-	void init(uint16 dim, bool rs, bool rp);
+	void init(size_t dim, bool rs, bool rp);
 	void configure();
 	void init_expansion();
-	void set_dim(uint16 d);
+	void set_dim(size_t d);
 	void set_base();
 	void set_start();
-	void alter_start(uint32 d, uint64 rs);
+	void alter_start(size_t d, uint64_t rs);
 	void set_permutation();
 	void set_permute_flag(bool rp) { isRandomlyPermuted = rp; }
 	void set_random_start_flag(bool rs) { isRandomStart = rs; }
 	void set_power_buffer();
 	void clear_buffer();
-	uint64 rnd_start(real r, uint32 base);
+	uint64_t rnd_start(double r, uint64_t base);
 
 	void genHalton();
 
-	inline uint32 permute(uint8 i, uint8 j);
-	uint64 get_start(uint32 d) { return start[d - 1]; }
-	void get_prime(uint16 n, uint32 *p);
-	real get_rnd(uint16 d);
+	inline uint64_t permute(size_t i, uint8_t j);
+	uint64_t get_start(size_t d) { return start[d - 1]; }
+	void get_prime();
+	double get_rnd(size_t d);
 
 private:
-	uint16 dim;
-	uint64 start[HALTON_DIM];
-	static uint32 base[HALTON_DIM];
-	real rnd[HALTON_DIM][WIDTH];
-	uint32 digit[HALTON_DIM][WIDTH];
-	static uint64 pwr[HALTON_DIM][WIDTH];
-	static uint32 **ppm;
-	static MersenneTwister *pmt; //Pseudorandom number generator handler
+	size_t dim;
+	std::vector<uint64_t> start;
+	std::vector<uint64_t> base;
+	std::vector<std::vector<double>> rnd;
+	std::vector<std::vector<uint64_t>> digit;
+	std::vector<std::vector<uint64_t>> pwr;
+	uint64_t **ppm;
+	MersenneTwister *pmt; //Pseudorandom number generator handler
 	bool isRandomlyPermuted;
 	bool isRandomStart;
 	bool isPowerInitialized;
+	bool isBaseInitialized;
 	bool isMasterThread;
 	bool isPermutationReady;
 };
