@@ -264,6 +264,7 @@ void halton::init(size_t dim, bool rs, bool rp)
 	pwr.resize(dim, std::vector<uint64_t>(WIDTH));
 	start.resize(dim);
 	base.resize(dim);
+	isPermutationReady = false;
 	if (isMasterThread && !isBaseInitialized)
 		set_base();
 	set_random_start_flag(rs);
