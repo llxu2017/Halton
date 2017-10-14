@@ -33,13 +33,13 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 References:
-Ökten, G., Shah, M. and Goncharov, Y., Random and deterministic digit 
-permutations of the Halton sequence. Monte Carlo and Quasi-Monte Carlo 
-Methods, Springer, 2010, 609-622.
-
 Ökten, G., Generalized von Neumann-Kakutani transformation and random-start
 scrambled Halton sequences. Journal of Complexity, 2009,
 Vol 25, No 4, 318--331.
+
+Ökten, G., Shah, M. and Goncharov, Y., Random and deterministic digit
+permutations of the Halton sequence. Monte Carlo and Quasi-Monte Carlo
+Methods, Springer, 2010, 609-622.
 
 Xu, L., & Ökten, G., High-performance financial Simulation Using
 randomized quasi-Monte Carlo Methods. Quantitative Finance, 2015,

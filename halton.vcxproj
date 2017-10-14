@@ -28,6 +28,9 @@
     <ClCompile Include="mt.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{EF3F6DBC-44A9-41FA-83BA-B6C397AFB78A}</ProjectGuid>

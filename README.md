@@ -2,7 +2,9 @@
 
 Fast Halton sequence generator. 
 Generate random-start randomly permuted Halton sequence of low discrepancy numbers. 
-Peak performance 10^8 numbers in 1.2 second. As a reference, 2x10^8 numbers in 1.2 second using Mersenne Twister pseudorandom number generator on the same computer (Intel i7-2630QM CPU @ 2.00GHz, DDR3 1333MHz). On a computer with larger cache and faster RAM, the performance of halton will be closer to Mersenne Twister.
+Peak performance 10^8 numbers in 1.2 second. As a reference, 2x10^8 numbers in 1.2 second using Mersenne Twister pseudorandom number generator on the same computer (Intel i7-2630QM CPU @ 2.00GHz, DDR3 1333MHz). On a computer with larger cache and faster RAM, the performance of Halton will be closer to Mersenne Twister.
+
+To compile, use C++ 17 compatible compiler with -O2 switch.
 
 TODO: Follow C++ 17 standard and remove dimension limitation.
 
