@@ -10,6 +10,6 @@ TODO: Follow C++ 17 standard and remove dimension limitation.
 
 ## References:
 
-Ökten, G., Shah, M. and Goncharov, Y., Random and deterministic digit permutations of the Halton sequence. Monte Carlo and Quasi-Monte Carlo Methods, Springer, 2010, 609-622.<br />
 Ökten, G., Generalized von Neumann-Kakutani transformation and random-start scrambled Halton sequences. Journal of Complexity, 2009, Vol 25, No 4, 318--331.<br />
+Ökten, G., Shah, M. and Goncharov, Y., Random and deterministic digit permutations of the Halton sequence. Monte Carlo and Quasi-Monte Carlo Methods, Springer, 2010, 609-622.<br />
 Xu, L., & Ökten, G., High-performance financial simulation using randomized quasi-Monte Carlo methods. Quantitative Finance, 2015, Vol 15, No 8, 1425-1436.
